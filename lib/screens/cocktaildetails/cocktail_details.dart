@@ -12,13 +12,27 @@ import 'package:flutter/painting.dart';
 import 'package:provider/src/provider.dart';
 
 class CocktailDetailsScreen extends StatefulWidget {
-  const CocktailDetailsScreen({Key? key}) : super(key: key);
+
+  final String cocktailID;
+
+  const CocktailDetailsScreen({required this.cocktailID, Key? key}) : super(key: key);
 
   @override
   _CocktailDetailsScreenState createState() => _CocktailDetailsScreenState();
 }
 
 class _CocktailDetailsScreenState extends State<CocktailDetailsScreen> {
+
+  @override
+  void initState() {
+    Provider.of<CocktailDetailsViewModel>(context, listen: false).fetchCocktailDetails(widget.cocktailID);
+    super.initState();
+  }
+
+  void _toggleFavourite() {
+    Provider.of<CocktailDetailsViewModel>(context, listen: false).setFavorite();
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<CocktailDetailsViewModel>();
@@ -157,7 +171,7 @@ class _CocktailDetailsScreenState extends State<CocktailDetailsScreen> {
             _buildIngredients(viewModel.cocktail.ingredients),
           ]),
         ),
-        _buildCustomActionBar()
+        _buildCustomActionBar(viewModel.cocktail)
       ],
     ));
   }
@@ -349,7 +363,7 @@ class _CocktailDetailsScreenState extends State<CocktailDetailsScreen> {
         ));
   }
 
-  Widget _buildCustomActionBar() {
+  Widget _buildCustomActionBar(Cocktail cocktail) {
     return SafeArea(
         child: SizedBox(
       height: 68,
@@ -374,8 +388,10 @@ class _CocktailDetailsScreenState extends State<CocktailDetailsScreen> {
           Padding(
             padding: const EdgeInsets.all(Spacing.spacing1x),
             child: ElevatedButton(
-              onPressed: () {},
-              child: const Icon(Icons.favorite_border, color: Colors.white),
+              onPressed: () {
+                _toggleFavourite();
+              },
+              child: Icon(cocktail.isFavourite ? Icons.favorite : Icons.favorite_border, color: Colors.white),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 padding: const EdgeInsets.all(10),

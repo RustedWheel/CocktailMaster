@@ -18,6 +18,7 @@ class Cocktail {
   final String instructions;
   final String imageUrl;
   final List<Ingredient> ingredients;
+  bool isFavourite = false;
 
   Cocktail({
     required this.id,
@@ -34,6 +35,10 @@ class Cocktail {
 
   List<String> getInstructions() {
     return instructions.split(". ");
+  }
+
+  void setFavourite(bool favourite) {
+    isFavourite = favourite;
   }
 
   factory Cocktail.fromJson(Map<String, dynamic> json) {

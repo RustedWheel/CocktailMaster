@@ -37,7 +37,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void addToFavourite(Cocktail cocktail) {
+    Provider.of<HomeScreenViewModel>(context, listen: false).setFavorite(cocktail, !cocktail.isFavourite);
+  }
 
+  void onBack() {
+    setState(() {});
   }
 
   void scrollListener() {
@@ -261,8 +265,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyles.body1,
                     ),
                     trailing: IconButton(
-                        icon: const Icon(
-                          Icons.favorite_border,
+                        icon: Icon(
+                          cocktail.isFavourite ? Icons.favorite : Icons.favorite_border,
                           color: Colors.white,
                         ),
                         onPressed: () {
@@ -302,11 +306,14 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider(
-                          create: (context) =>
-                              CocktailDetailsViewModel(cocktail),
-                          child: const CocktailDetailsScreen()))
-              )
+                      builder: (context) => CocktailDetailsScreen(cocktailID: cocktail.id)
+                          // ChangeNotifierProvider(
+                          //   create: (context) =>
+                          //       CocktailDetailsViewModel(cocktail),
+                          //   child: const CocktailDetailsScreen()
+                          // )
+                  )
+              ).then((value) =>  onBack() )
             });
   }
 
@@ -382,10 +389,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ChangeNotifierProvider(
-                            create: (context) =>
-                                CocktailDetailsViewModel(cocktail),
-                            child: const CocktailDetailsScreen())))
+                        // builder: (context) => ChangeNotifierProvider(
+                        //     create: (context) =>
+                        //         CocktailDetailsViewModel(cocktail),
+                        //     child: const CocktailDetailsScreen())
+          builder: (context) => CocktailDetailsScreen(cocktailID: cocktail.id)
+                    )
+                ).then((value) =>  onBack() )
               }));
 
   @override

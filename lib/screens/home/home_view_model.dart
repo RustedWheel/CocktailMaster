@@ -1,11 +1,15 @@
 import 'package:async/async.dart';
 import 'package:cocktail_master/models/cocktail.dart';
+import 'package:cocktail_master/models/dao/cocktail_dao.dart';
 import 'package:cocktail_master/network/network_api_response.dart';
 import 'package:cocktail_master/services/cocktail_service.dart';
 import 'package:flutter/cupertino.dart';
 
 class HomeScreenViewModel extends ChangeNotifier {
+
   CocktailService cocktailService;
+  CocktailDAO cocktailDAO;
+
   List<Cocktail> searchedCocktailDrinks = [];
   List<Cocktail> randomCocktailDrinks = [];
   List<Cocktail> allCocktailDrinks = [];
@@ -17,11 +21,14 @@ class HomeScreenViewModel extends ChangeNotifier {
 
   CancelableOperation? _cancellableOperation;
 
-  HomeScreenViewModel(this.cocktailService);
+  HomeScreenViewModel(this.cocktailService, this.cocktailDAO);
 
   void resetAndFetch() {
     currentPageNum = "a".codeUnitAt(0);
+    randomCocktailDrinks.clear();
     allCocktailDrinks.clear();
+    searchedCocktailDrinks.clear();
+    cocktailDAO.clear();
     fetchCocktailsWithPagination();
     notifyListeners();
   }
@@ -37,9 +44,7 @@ class HomeScreenViewModel extends ChangeNotifier {
           .fetchCocktails(String.fromCharCode(currentPageNum));
 
       if (response.isSuccess) {
-        if (response.data != null) {
-          allCocktailDrinks.addAll(response.data);
-        }
+        updateCocktailsList();
       } else {
         switch (response.statusCode) {
           case 400:
@@ -91,6 +96,7 @@ class HomeScreenViewModel extends ChangeNotifier {
 
         if (searchTerm.isNotEmpty) {
           searchedCocktailDrinks.addAll(response.data);
+          updateCocktailsList();
         }
       }
     } else {
@@ -118,6 +124,21 @@ class HomeScreenViewModel extends ChangeNotifier {
       }
     }
 
+    updateCocktailsList();
+    notifyListeners();
+  }
+
+  void updateCocktailsList() {
+    allCocktailDrinks = cocktailDAO.getAllCocktailDrinks();
+  }
+
+  void setFavorite(Cocktail cocktail, bool favourite) {
+    cocktailDAO.setFavourite(cocktail, favourite);
+    notifyListeners();
+  }
+
+  void updateProvider(dao) {
+    cocktailDAO = dao;
     notifyListeners();
   }
 }
