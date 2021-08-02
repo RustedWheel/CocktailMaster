@@ -5,10 +5,11 @@ import 'package:cocktail_master/common/cocktail_colors.dart';
 import 'package:cocktail_master/common/spacing.dart';
 import 'package:cocktail_master/common/strings_home.dart';
 import 'package:cocktail_master/common/text_styles.dart';
+import 'package:cocktail_master/screens/home/home_cocktail_card.dart';
 import 'package:cocktail_master/components/persistent_header.dart';
 import 'package:cocktail_master/models/cocktail.dart';
 import 'package:cocktail_master/screens/cocktaildetails/cocktail_details.dart';
-import 'package:cocktail_master/screens/cocktaildetails/cocktail_details_view_model.dart';
+import 'package:cocktail_master/screens/home/home_random_selection_cocktail_card.dart';
 import 'package:cocktail_master/screens/home/home_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
-  final scrollController =  ScrollController();
+  final scrollController = ScrollController();
   final textInputController = TextEditingController();
 
   @override
@@ -37,7 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void addToFavourite(Cocktail cocktail) {
-    Provider.of<HomeScreenViewModel>(context, listen: false).setFavorite(cocktail, !cocktail.isFavourite);
+    Provider.of<HomeScreenViewModel>(context, listen: false)
+        .setFavorite(cocktail, !cocktail.isFavourite);
   }
 
   void onBack() {
@@ -70,8 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [CocktailColors.background16, CocktailColors.background19])),
-                    // colors: [CocktailColors.background16, CocktailColors.background17, CocktailColors.background19])),
+                    colors: [
+                  CocktailColors.background16,
+                  CocktailColors.background19
+                ])),
+            // colors: [CocktailColors.background16, CocktailColors.background17, CocktailColors.background19])),
             child: SafeArea(
               child: RefreshIndicator(
                 key: _refreshIndicatorKey,
@@ -79,31 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   controller: scrollController,
                   slivers: <Widget>[
                     // Add the app bar to the CustomScrollView.
-                    SliverAppBar(
-                      // backgroundColor: CocktailColors.background1,
-                      backgroundColor: Colors.transparent,
-                      // title: Text(StringsHome.homeTitle,
-                      //     style: TextStyles.header.copyWith(fontSize: 28)),
-                      title: Padding(
-                        padding: const EdgeInsets.only(right: 32, top: 24, bottom: 8),
-                        child: Image.asset("images/cocktail_master.png", color: Colors.white),
-                      ),
-                      floating: false,
-                      expandedHeight: 100,
-                      toolbarHeight: 80,
-                      leading: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Image.asset("images/ic_cocktail.png", color: Colors.white),
-                      ),
-                      actions: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: IconButton(
-                              icon: Image.asset("images/saved_favourites.png"),
-                              onPressed: () {}),
-                        )
-                      ],
-                    ),
+                    _HomeAppBar(),
                     SliverPersistentHeader(
                       pinned: true,
                       delegate: PersistentHeader(
@@ -112,31 +93,34 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: TextStyles.body2,
                           cursorColor: CocktailColors.whiteTransparent25,
                           decoration: InputDecoration(
-                              filled: true,
-                              fillColor: CocktailColors.background13,
-                              enabledBorder: const OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
-                                  borderSide: BorderSide(
-                                      color: CocktailColors.background8,
-                                      width: 2)),
-                              focusedBorder: const OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
-                                  borderSide: BorderSide(
-                                      color: CocktailColors.background8,
-                                      width: 2)),
-                              hintText: 'Search drink',
-                              hintStyle: TextStyles.body2,
+                            filled: true,
+                            fillColor: CocktailColors.background13,
+                            enabledBorder: const OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12)),
+                                borderSide: BorderSide(
+                                    color: CocktailColors.background8,
+                                    width: 2)),
+                            focusedBorder: const OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12)),
+                                borderSide: BorderSide(
+                                    color: CocktailColors.background8,
+                                    width: 2)),
+                            hintText: 'Search drink',
+                            hintStyle: TextStyles.body2,
                             suffixIcon: IconButton(
-                              onPressed: (){
+                              onPressed: () {
                                 if (textInputController.text.isNotEmpty) {
                                   textInputController.clear();
                                   viewModel.updateSearchTerm("");
                                   setState(() {});
                                 }
                               },
-                              icon: Icon(Icons.clear, color: viewModel.searchTerm.isNotEmpty ? Colors.white : Colors.transparent),
+                              icon: Icon(Icons.clear,
+                                  color: viewModel.searchTerm.isNotEmpty
+                                      ? Colors.white
+                                      : Colors.transparent),
                             ),
                           ),
                           onChanged: (text) {
@@ -146,46 +130,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     if (viewModel.searchTerm.isEmpty)
-                      SliverToBoxAdapter(
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                              top: Spacing.spacing2x,
-                              left: Spacing.spacing2x,
-                              right: Spacing.spacing2x),
-                          child: const Text("Random Selections",
-                              style: TextStyles.subheader),
-                        ),
+                      const SliverToBoxAdapter(
+                        child: _HomeSectionHeader("Random Selections"),
                       ),
                     if (viewModel.searchTerm.isEmpty)
-                      SliverToBoxAdapter(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Spacing.spacingHalf),
-                          height: 242,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: viewModel.randomCocktailDrinks.length,
-                              itemBuilder: (context, index) =>
-                                  _buildRandomSelectionCardWidget(
-                                      viewModel.randomCocktailDrinks[index])),
-                        ),
+                      _HomeRandomSelectionCardList(
+                          viewModel.randomCocktailDrinks),
+                    if (viewModel.searchTerm.isEmpty)
+                      const SliverToBoxAdapter(
+                        child: _HomeSectionHeader("All Drinks"),
                       ),
                     if (viewModel.searchTerm.isEmpty)
-                      SliverToBoxAdapter(
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                              top: Spacing.spacing2x,
-                              left: Spacing.spacing2x,
-                              right: Spacing.spacing2x),
-                          child: const Text("All Drinks",
-                              style: TextStyles.subheader),
-                        ),
-                      ),
-                    if (viewModel.searchTerm.isEmpty)
-                      _buildCocktailListsWidget(viewModel.allCocktailDrinks)
+                      _HomeCardGridList(viewModel.allCocktailDrinks)
                     else
-                      _buildCocktailListsWidget(
-                          viewModel.searchedCocktailDrinks)
+                      _HomeCardGridList(viewModel.searchedCocktailDrinks)
                   ],
                 ),
                 onRefresh: _fetchCocktailData,
@@ -193,215 +151,141 @@ class _HomeScreenState extends State<HomeScreen> {
             )));
   }
 
-  Widget _buildCocktailListsWidget(List<Cocktail> cocktails) => SliverPadding(
-        padding: const EdgeInsets.symmetric(
-            vertical: Spacing.spacing2x, horizontal: Spacing.spacing1x),
-        sliver: SliverGrid(
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 250,
-            childAspectRatio: 2 / 3,
-            crossAxisSpacing: Spacing.spacing1x,
-            mainAxisSpacing: Spacing.spacing1x,
-          ),
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              var cocktail = cocktails[index];
-              return _buildCocktailCardWidget(cocktail);
-            },
-            childCount: cocktails.length,
-          ),
-        ),
-      );
-
-  Widget _buildCocktailCardWidget(Cocktail cocktail) {
-    return GestureDetector(
-        child: Hero(
-          tag: cocktail.id,
-          child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  CachedNetworkImage(
-                    imageUrl: cocktail.imageUrl,
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Container(
-                            color: Colors.grey,
-                            child: Center(
-                              child: SizedBox(
-                                  width: 24.0,
-                                  height: 24.0,
-                                  child: CircularProgressIndicator(
-                                      color: CocktailColors.background1,
-                                      value: downloadProgress.progress)),
-                            )),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    fit: BoxFit.cover,
-                  ),
-                  Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                          width: double.infinity,
-                          height: 50,
-                          decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              CocktailColors.blackTransparent90,
-                              Colors.transparent,
-                            ],
-                          )))),
-                  ListTile(
-                    dense: true,
-                    contentPadding: const EdgeInsets.only(
-                        left: Spacing.spacing2x, right: 0.0),
-                    title: Text(
-                      cocktail.name,
-                      style: TextStyles.body1,
-                    ),
-                    trailing: IconButton(
-                        icon: Icon(
-                          cocktail.isFavourite ? Icons.favorite : Icons.favorite_border,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          addToFavourite(cocktail);
-                        }),
-                  ),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        width: double.infinity,
-                        height: 40,
-                        decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                            CocktailColors.blackTransparent90,
-                            Colors.transparent,
-                          ],
-                        )),
-                        child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: ListTile(
-                                dense: true,
-                                contentPadding: const EdgeInsets.only(
-                                    left: Spacing.spacing2x,
-                                    right: Spacing.spacing2x),
-                                title: Text(
-                                  cocktail.category,
-                                  style: TextStyles.body3,
-                                ))),
-                      ))
-                ],
-              )),
-        ),
-        onTap: () => {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CocktailDetailsScreen(cocktailID: cocktail.id)
-                          // ChangeNotifierProvider(
-                          //   create: (context) =>
-                          //       CocktailDetailsViewModel(cocktail),
-                          //   child: const CocktailDetailsScreen()
-                          // )
-                  )
-              ).then((value) =>  onBack() )
-            });
-  }
-
-  Widget _buildRandomSelectionCardWidget(Cocktail cocktail) => Container(
-      padding: const EdgeInsets.symmetric(
-          vertical: Spacing.spacing2x, horizontal: Spacing.spacing1x),
-      height: 210,
-      width: 165,
-      child: GestureDetector(
-          child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  CachedNetworkImage(
-                    imageUrl: cocktail.imageUrl,
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Container(
-                            color: Colors.grey,
-                            child: Center(
-                              child: SizedBox(
-                                  width: 24.0,
-                                  height: 24.0,
-                                  child: CircularProgressIndicator(
-                                      color: CocktailColors.background1,
-                                      value: downloadProgress.progress)),
-                            )),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    fit: BoxFit.cover,
-                  ),
-                  Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                          width: double.infinity,
-                          height: 40,
-                          decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              CocktailColors.blackTransparent90,
-                              Colors.transparent,
-                            ],
-                          )))),
-                  Padding(
-                    padding: const EdgeInsets.all(Spacing.spacing1x),
-                    child: Text(
-                      cocktail.name,
-                      style: TextStyles.body2,
-                    ),
-                  ),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                          width: double.infinity,
-                          height: 30,
-                          decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              CocktailColors.blackTransparent90,
-                              Colors.transparent,
-                            ],
-                          ))))
-                ],
-              )),
-          onTap: () => {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        // builder: (context) => ChangeNotifierProvider(
-                        //     create: (context) =>
-                        //         CocktailDetailsViewModel(cocktail),
-                        //     child: const CocktailDetailsScreen())
-          builder: (context) => CocktailDetailsScreen(cocktailID: cocktail.id)
-                    )
-                ).then((value) =>  onBack() )
-              }));
-
   @override
   void dispose() {
     scrollController.dispose();
     textInputController.dispose();
     super.dispose();
+  }
+}
+
+class _HomeAppBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      // backgroundColor: CocktailColors.background1,
+      backgroundColor: Colors.transparent,
+      // title: Text(StringsHome.homeTitle,
+      //     style: TextStyles.header.copyWith(fontSize: 28)),
+      title: Padding(
+        padding: const EdgeInsets.only(right: 32, top: 24, bottom: 8),
+        child: Image.asset("images/cocktail_master.png", color: Colors.white),
+      ),
+      floating: false,
+      expandedHeight: 100,
+      toolbarHeight: 80,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: Image.asset("images/ic_cocktail.png", color: Colors.white),
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: IconButton(
+              icon: Image.asset("images/saved_favourites.png"),
+              onPressed: () {}),
+        )
+      ],
+    );
+  }
+}
+
+class _HomeSectionHeader extends StatelessWidget{
+
+  final String headerText;
+
+  const _HomeSectionHeader(this.headerText, {Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(
+          top: Spacing.spacing2x,
+          left: Spacing.spacing2x,
+          right: Spacing.spacing2x),
+      child: Text(headerText, style: TextStyles.subheader),
+    );
+  }
+
+}
+
+class _HomeRandomSelectionCardList extends StatelessWidget {
+  final List<Cocktail> cocktailList;
+
+  const _HomeRandomSelectionCardList(this.cocktailList, {Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.spacingHalf),
+        height: 242,
+        child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: cocktailList.length,
+            itemBuilder: (context, index) => Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: Spacing.spacing2x, horizontal: Spacing.spacing1x),
+                height: 210,
+                width: 165,
+                child: GestureDetector(
+                    child: HomeRandomSelectionCocktailCardItem(
+                        cocktailList[index]),
+                    onTap: () => {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CocktailDetailsScreen(
+                                      cocktailID: cocktailList[index]
+                                          .id))).then((value) =>
+                              Provider.of<HomeScreenViewModel>(context,
+                                      listen: false)
+                                  .onBack())
+                        }))),
+      ),
+    );
+  }
+}
+
+class _HomeCardGridList extends StatelessWidget {
+  final List<Cocktail> cocktailList;
+
+  const _HomeCardGridList(this.cocktailList, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(
+          vertical: Spacing.spacing2x, horizontal: Spacing.spacing1x),
+      sliver: SliverGrid(
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 250,
+          childAspectRatio: 2 / 3,
+          crossAxisSpacing: Spacing.spacing1x,
+          mainAxisSpacing: Spacing.spacing1x,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            var cocktail = cocktailList[index];
+            // return _buildCocktailCardWidget(cocktail);
+            return GestureDetector(
+                child: HomeCocktailCardItem(cocktail),
+                onTap: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CocktailDetailsScreen(
+                                  cocktailID: cocktail.id))).then((value) =>
+                          Provider.of<HomeScreenViewModel>(context,
+                                  listen: false)
+                              .onBack())
+                    });
+          },
+          childCount: cocktailList.length,
+        ),
+      ),
+    );
   }
 }

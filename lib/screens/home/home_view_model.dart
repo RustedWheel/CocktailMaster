@@ -141,4 +141,8 @@ class HomeScreenViewModel extends ChangeNotifier {
     cocktailDAO = dao;
     notifyListeners();
   }
+
+  void onBack() {
+    notifyListeners();
+  }
 }
