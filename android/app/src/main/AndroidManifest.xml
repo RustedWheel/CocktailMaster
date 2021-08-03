@@ -2,7 +2,7 @@
     package="com.rustedwheel.cocktail_master">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="cocktail_master"
+        android:label="Cocktail Master"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
