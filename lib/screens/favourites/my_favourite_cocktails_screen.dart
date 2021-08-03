@@ -1,4 +1,5 @@
 import 'package:cocktail_master/common/cocktail_colors.dart';
+import 'package:cocktail_master/common/strings_favourites.dart';
 import 'package:cocktail_master/common/text_styles.dart';
 import 'package:cocktail_master/components/card_grid_list.dart';
 import 'package:cocktail_master/screens/favourites/my_favourite_cocktails_view_model.dart';
@@ -29,7 +30,7 @@ class MyFavouriteCocktailsScreen extends StatelessWidget {
                 slivers: <Widget>[
                   SliverAppBar(
                       backgroundColor: Colors.transparent,
-                      title: Text("My Favourite",
+                      title: Text(StringsFavourites.favouritesMyFavourites,
                           style: TextStyles.header.copyWith(fontSize: 28)),
                       floating: false,
                       expandedHeight: 80),

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cocktail_master/common/cocktail_colors.dart';
 import 'package:cocktail_master/common/spacing.dart';
+import 'package:cocktail_master/common/strings_cocktail_details.dart';
 import 'package:cocktail_master/common/text_styles.dart';
 import 'package:cocktail_master/models/cocktail.dart';
 import 'package:cocktail_master/models/ingredient.dart';
@@ -130,7 +131,7 @@ class CocktailDetailsScreen extends StatelessWidget {
                         top: Spacing.spacing4x,
                         left: Spacing.spacing2x,
                         right: Spacing.spacing2x),
-                    child: Text("Instructions", style: TextStyles.subheader)),
+                    child: Text(StringsCocktailDetails.cocktailDetailsInstructions, style: TextStyles.subheader)),
               ]),
             ),
             _buildInstructions(viewModel.instructions),
@@ -145,7 +146,7 @@ class CocktailDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: [
-                      const Text("Ingredients", style: TextStyles.subheader),
+                      const Text(StringsCocktailDetails.cocktailDetailsIngredients, style: TextStyles.subheader),
                       const Spacer(),
                       Text("${viewModel.cocktail.ingredients.length} items",
                           style: TextStyles.body2.copyWith(
@@ -169,7 +170,7 @@ class CocktailDetailsScreen extends StatelessWidget {
         Expanded(
           child: Column(
             children: [
-              Text("Glass Type".toUpperCase(), style: TextStyles.smallheader),
+              Text(StringsCocktailDetails.cocktailDetailsGlassType.toUpperCase(), style: TextStyles.smallheader),
               Padding(
                   padding: const EdgeInsets.only(
                       left: Spacing.spacing1x,
@@ -188,7 +189,7 @@ class CocktailDetailsScreen extends StatelessWidget {
         Expanded(
           child: Column(
             children: [
-              Text("Cocktail Type".toUpperCase(),
+              Text(StringsCocktailDetails.cocktailDetailsCocktailType.toUpperCase(),
                   style: TextStyles.smallheader),
               Padding(
                   padding: const EdgeInsets.only(
@@ -208,7 +209,7 @@ class CocktailDetailsScreen extends StatelessWidget {
         Expanded(
             child: Column(
           children: [
-            Text("Alcoholic".toUpperCase(), style: TextStyles.smallheader),
+            Text(StringsCocktailDetails.cocktailDetailsAlcoholic.toUpperCase(), style: TextStyles.smallheader),
             Padding(
                 padding: const EdgeInsets.only(
                     left: Spacing.spacing1x,

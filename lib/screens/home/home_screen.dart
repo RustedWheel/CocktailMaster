@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cocktail_master/common/cocktail_colors.dart';
+import 'package:cocktail_master/common/images.dart';
 import 'package:cocktail_master/common/spacing.dart';
 import 'package:cocktail_master/common/strings_home.dart';
 import 'package:cocktail_master/common/text_styles.dart';
@@ -64,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
         body: Container(
-            // color: CocktailColors.background1,
             decoration: const BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -73,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   CocktailColors.background16,
                   CocktailColors.background19
                 ])),
-            // colors: [CocktailColors.background16, CocktailColors.background17, CocktailColors.background19])),
             child: SafeArea(
               child: RefreshIndicator(
                 key: _refreshIndicatorKey,
@@ -104,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderSide: BorderSide(
                                     color: CocktailColors.background8,
                                     width: 2)),
-                            hintText: 'Search drink',
+                            hintText: StringsHome.homeSearchDrink,
                             hintStyle: TextStyles.body2,
                             suffixIcon: IconButton(
                               onPressed: () {
@@ -128,14 +127,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     if (viewModel.searchTerm.isEmpty)
                       const SliverToBoxAdapter(
-                        child: _HomeSectionHeader("Random Selections"),
+                        child: _HomeSectionHeader(StringsHome.homeRandomSelections),
                       ),
                     if (viewModel.searchTerm.isEmpty)
                       _HomeRandomSelectionCardList(
                           viewModel.randomCocktailDrinks),
                     if (viewModel.searchTerm.isEmpty)
                       const SliverToBoxAdapter(
-                        child: _HomeSectionHeader("All Drinks"),
+                        child: _HomeSectionHeader(StringsHome.homeAllDrinks),
                       ),
                     if (viewModel.searchTerm.isEmpty)
                       CardGridList(viewModel.allCocktailDrinks, true)
@@ -166,20 +165,20 @@ class _HomeAppBar extends StatelessWidget {
       //     style: TextStyles.header.copyWith(fontSize: 28)),
       title: Padding(
         padding: const EdgeInsets.only(right: 32, top: 24, bottom: 8),
-        child: Image.asset("images/cocktail_master.png", color: Colors.white),
+        child: Image.asset(Images.imageCocktailMasterLogo, color: Colors.white),
       ),
       floating: false,
       expandedHeight: 100,
       toolbarHeight: 80,
       leading: Padding(
         padding: const EdgeInsets.only(left: 8),
-        child: Image.asset("images/ic_cocktail.png", color: Colors.white),
+        child: Image.asset(Images.imageIconCocktail, color: Colors.white),
       ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(top: 8),
           child: IconButton(
-              icon: Image.asset("images/saved_favourites.png"),
+              icon: Image.asset(Images.imageIconSavedFavourites),
               onPressed: () {
                 Navigator.push(
                     context,
