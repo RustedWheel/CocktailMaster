@@ -3,16 +3,18 @@ import 'package:cocktail_master/common/cocktail_colors.dart';
 import 'package:cocktail_master/common/spacing.dart';
 import 'package:cocktail_master/common/text_styles.dart';
 import 'package:cocktail_master/models/cocktail.dart';
+import 'package:cocktail_master/screens/favourites/my_favourite_cocktails_view_model.dart';
 import 'package:cocktail_master/screens/home/home_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 
-class HomeCocktailCardItem extends StatelessWidget {
+class CocktailCardItem extends StatelessWidget {
 
   final Cocktail cocktail;
+  final bool isHome;
 
-  const HomeCocktailCardItem(this.cocktail, {Key? key}) : super(key: key);
+  const CocktailCardItem(this.cocktail, this.isHome, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +74,11 @@ class HomeCocktailCardItem extends StatelessWidget {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          Provider.of<HomeScreenViewModel>(context, listen: false).setFavorite(cocktail, !cocktail.isFavourite);
+                          if (isHome) {
+                            Provider.of<HomeScreenViewModel>(context, listen: false).onToggleFavorite(cocktail);
+                          } else {
+                            Provider.of<MyFavouriteCocktailsViewModel>(context, listen: false).onToggleFavorite(cocktail);
+                          }
                         }),
                   ),
                   Align(

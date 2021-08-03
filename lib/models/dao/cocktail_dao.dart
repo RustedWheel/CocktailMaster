@@ -9,6 +9,10 @@ class CocktailDAO {
     return list;
   }
 
+  List<Cocktail> getFavouriteCocktails() {
+    return cocktailDrinks.where((element) => element.isFavourite).toList();
+  }
+
   Cocktail getCocktail(String cocktailId) {
     return cocktailDrinks.firstWhere((element) => element.id == cocktailId);
   }

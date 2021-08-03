@@ -1,5 +1,6 @@
 import 'package:cocktail_master/models/dao/cocktail_dao.dart';
 import 'package:cocktail_master/screens/cocktaildetails/cocktail_details_view_model.dart';
+import 'package:cocktail_master/screens/favourites/my_favourite_cocktails_view_model.dart';
 import 'package:cocktail_master/screens/home/home_screen.dart';
 import 'package:cocktail_master/screens/home/home_view_model.dart';
 import 'package:cocktail_master/services/cocktail_service.dart';
@@ -45,6 +46,14 @@ class MyApp extends StatelessWidget {
                 cocktailDetailsViewModel != null
                     ? (cocktailDetailsViewModel..updateProvider(cocktailDAO))
                     : CocktailDetailsViewModel(cocktailDAO),
+          ),
+          ChangeNotifierProxyProvider<CocktailDAO, MyFavouriteCocktailsViewModel>(
+            create: (BuildContext context) => MyFavouriteCocktailsViewModel(
+                Provider.of<CocktailDAO>(context, listen: false)),
+            update: (context, cocktailDAO, myFavouriteCocktailsViewModel) =>
+            myFavouriteCocktailsViewModel != null
+                ? (myFavouriteCocktailsViewModel..updateProvider(cocktailDAO))
+                : MyFavouriteCocktailsViewModel(cocktailDAO),
           ),
         ],
         child: MaterialApp(

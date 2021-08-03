@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cocktail_master/common/cocktail_colors.dart';
 import 'package:cocktail_master/common/spacing.dart';
 import 'package:cocktail_master/common/strings_home.dart';
 import 'package:cocktail_master/common/text_styles.dart';
-import 'package:cocktail_master/screens/home/home_cocktail_card.dart';
+import 'package:cocktail_master/components/card_grid_list.dart';
+import 'package:cocktail_master/screens/favourites/my_favourite_cocktails_screen.dart';
 import 'package:cocktail_master/components/persistent_header.dart';
 import 'package:cocktail_master/models/cocktail.dart';
 import 'package:cocktail_master/screens/cocktaildetails/cocktail_details.dart';
@@ -23,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
@@ -39,11 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void addToFavourite(Cocktail cocktail) {
     Provider.of<HomeScreenViewModel>(context, listen: false)
-        .setFavorite(cocktail, !cocktail.isFavourite);
-  }
-
-  void onBack() {
-    setState(() {});
+        .onToggleFavorite(cocktail);
   }
 
   void scrollListener() {
@@ -141,9 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: _HomeSectionHeader("All Drinks"),
                       ),
                     if (viewModel.searchTerm.isEmpty)
-                      _HomeCardGridList(viewModel.allCocktailDrinks)
+                      CardGridList(viewModel.allCocktailDrinks, true)
                     else
-                      _HomeCardGridList(viewModel.searchedCocktailDrinks)
+                      CardGridList(viewModel.searchedCocktailDrinks, true)
                   ],
                 ),
                 onRefresh: _fetchCocktailData,
@@ -183,7 +180,15 @@ class _HomeAppBar extends StatelessWidget {
           padding: const EdgeInsets.only(top: 8),
           child: IconButton(
               icon: Image.asset("images/saved_favourites.png"),
-              onPressed: () {}),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyFavouriteCocktailsScreen())).then((value) =>
+                    Provider.of<HomeScreenViewModel>(context,
+                        listen: false)
+                        .onBack());
+              }),
         )
       ],
     );
@@ -244,47 +249,6 @@ class _HomeRandomSelectionCardList extends StatelessWidget {
                                       listen: false)
                                   .onBack())
                         }))),
-      ),
-    );
-  }
-}
-
-class _HomeCardGridList extends StatelessWidget {
-  final List<Cocktail> cocktailList;
-
-  const _HomeCardGridList(this.cocktailList, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(
-          vertical: Spacing.spacing2x, horizontal: Spacing.spacing1x),
-      sliver: SliverGrid(
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 250,
-          childAspectRatio: 2 / 3,
-          crossAxisSpacing: Spacing.spacing1x,
-          mainAxisSpacing: Spacing.spacing1x,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
-            var cocktail = cocktailList[index];
-            // return _buildCocktailCardWidget(cocktail);
-            return GestureDetector(
-                child: HomeCocktailCardItem(cocktail),
-                onTap: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CocktailDetailsScreen(
-                                  cocktailID: cocktail.id))).then((value) =>
-                          Provider.of<HomeScreenViewModel>(context,
-                                  listen: false)
-                              .onBack())
-                    });
-          },
-          childCount: cocktailList.length,
-        ),
       ),
     );
   }

@@ -132,8 +132,8 @@ class HomeScreenViewModel extends ChangeNotifier {
     allCocktailDrinks = cocktailDAO.getAllCocktailDrinks();
   }
 
-  void setFavorite(Cocktail cocktail, bool favourite) {
-    cocktailDAO.setFavourite(cocktail, favourite);
+  void onToggleFavorite(Cocktail cocktail) {
+    cocktailDAO.setFavourite(cocktail, !cocktail.isFavourite);
     notifyListeners();
   }
 
