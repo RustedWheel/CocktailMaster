@@ -6,26 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 
-class MyFavouriteCocktailsScreen extends StatefulWidget {
+class MyFavouriteCocktailsScreen extends StatelessWidget {
+
   const MyFavouriteCocktailsScreen({Key? key}) : super(key: key);
 
   @override
-  _MyFavouriteCocktailsScreenState createState() =>
-      _MyFavouriteCocktailsScreenState();
-}
-
-class _MyFavouriteCocktailsScreenState
-    extends State<MyFavouriteCocktailsScreen> {
-  @override
-  void initState() {
-    Provider.of<MyFavouriteCocktailsViewModel>(context, listen: false)
-        .rebuildList();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var viewModel = context.watch<MyFavouriteCocktailsViewModel>();
+    var viewModel = context.watch<MyFavouriteCocktailsViewModel>()..rebuildList();
 
     return Scaffold(
         body: Container(
