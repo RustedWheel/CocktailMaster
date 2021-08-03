@@ -54,7 +54,9 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon/icon.png"
+  image_path: "assets/launcher/icon.png"
+  adaptive_icon_background: "assets/launcher/background.png"
+  adaptive_icon_foreground: "assets/launcher/foreground.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -70,13 +72,13 @@ flutter:
   fonts:
     - family: PlayfairDisplay
       fonts:
-        - asset: fonts/PlayfairDisplay/PlayfairDisplay.ttf
+        - asset: assets/fonts/PlayfairDisplay/PlayfairDisplay.ttf
 
   assets:
-    - images/placeholder.png
-    - images/saved_favourites.png
-    - images/ic_cocktail.png
-    - images/cocktail_master.png
+    - assets/images/placeholder.png
+    - assets/images/saved_favourites.png
+    - assets/images/ic_cocktail.png
+    - assets/images/cocktail_master.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
