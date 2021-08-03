@@ -11,31 +11,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/src/provider.dart';
 
-class CocktailDetailsScreen extends StatefulWidget {
+class CocktailDetailsScreen extends StatelessWidget {
 
   final String cocktailID;
 
   const CocktailDetailsScreen({required this.cocktailID, Key? key}) : super(key: key);
 
   @override
-  _CocktailDetailsScreenState createState() => _CocktailDetailsScreenState();
-}
-
-class _CocktailDetailsScreenState extends State<CocktailDetailsScreen> {
-
-  @override
-  void initState() {
-    Provider.of<CocktailDetailsViewModel>(context, listen: false).fetchCocktailDetails(widget.cocktailID);
-    super.initState();
-  }
-
-  void _toggleFavourite() {
-    Provider.of<CocktailDetailsViewModel>(context, listen: false).setFavorite();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<CocktailDetailsViewModel>();
+
+    final viewModel = context.watch<CocktailDetailsViewModel>()..fetchCocktailDetails(cocktailID);
 
     return Scaffold(
         body: Stack(
@@ -171,7 +156,7 @@ class _CocktailDetailsScreenState extends State<CocktailDetailsScreen> {
             _buildIngredients(viewModel.cocktail.ingredients),
           ]),
         ),
-        _buildCustomActionBar(viewModel.cocktail)
+        _buildCustomActionBar(context, viewModel.cocktail)
       ],
     ));
   }
@@ -363,7 +348,7 @@ class _CocktailDetailsScreenState extends State<CocktailDetailsScreen> {
         ));
   }
 
-  Widget _buildCustomActionBar(Cocktail cocktail) {
+  Widget _buildCustomActionBar(context, Cocktail cocktail) {
     return SafeArea(
         child: SizedBox(
       height: 68,
@@ -389,7 +374,7 @@ class _CocktailDetailsScreenState extends State<CocktailDetailsScreen> {
             padding: const EdgeInsets.all(Spacing.spacing1x),
             child: ElevatedButton(
               onPressed: () {
-                _toggleFavourite();
+                Provider.of<CocktailDetailsViewModel>(context, listen: false).setFavorite();
               },
               child: Icon(cocktail.isFavourite ? Icons.favorite : Icons.favorite_border, color: Colors.white),
               style: ElevatedButton.styleFrom(

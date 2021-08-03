@@ -57,8 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
     var viewModel = context.watch<HomeScreenViewModel>();
 
     Future<void> _fetchCocktailData() async {
-      viewModel.fetchRandomCocktails();
       viewModel.resetAndFetch();
+      viewModel.fetchRandomCocktails();
       setState(() {});
     }
 
