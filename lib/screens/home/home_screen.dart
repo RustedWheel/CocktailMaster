@@ -159,10 +159,7 @@ class _HomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      // backgroundColor: CocktailColors.background1,
       backgroundColor: Colors.transparent,
-      // title: Text(StringsHome.homeTitle,
-      //     style: TextStyles.header.copyWith(fontSize: 28)),
       title: Padding(
         padding: const EdgeInsets.only(right: 32, top: 24, bottom: 8),
         child: Image.asset(Images.imageCocktailMasterLogo, color: Colors.white),

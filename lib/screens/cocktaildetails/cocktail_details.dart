@@ -279,7 +279,6 @@ class CocktailDetailsScreen extends StatelessWidget {
           children: [
             CachedNetworkImage(
               color: CocktailColors.background10,
-              // color: Colors.grey,
               colorBlendMode: BlendMode.dstATop,
               imageUrl:
                   "https://www.thecocktaildb.com/images/ingredients/${ingredient.name}.png",

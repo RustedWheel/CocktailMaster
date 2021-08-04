@@ -31,7 +31,6 @@ class CardGridList extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
             var cocktail = cocktailList[index];
-            // return _buildCocktailCardWidget(cocktail);
             return GestureDetector(
                 child: CocktailCardItem(cocktail, isHome),
                 onTap: () => {

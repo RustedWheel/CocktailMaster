@@ -7,7 +7,6 @@ class CocktailColors {
 
   static const background1 =  Color(0xFF1e1228);
   static const background2 =  Color(0xFF1d1125);
-  // static const background3 =  Color(0xFF2A1B30);
   static const background3 =  Color(0xFF2c1c36);
   static const background4 =  Color(0xFF211e27);
   static const background5 =  Color(0xFF221529);

@@ -18,7 +18,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // debugPaintSizeEnabled = true;
 
     // A better to way to manage dependency would be to use GetIT
     return MultiProvider(
@@ -61,10 +60,6 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: appTheme,
             home: HomeScreen()
-            // home: ChangeNotifierProvider(
-            //   create: (context) => HomeScreenViewModel(cocktailService),
-            //   child: const HomeScreen(),
-            // )
             ));
   }
 }
