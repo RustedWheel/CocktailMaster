@@ -28,7 +28,6 @@ class HomeScreenViewModel extends ChangeNotifier {
     randomCocktailDrinks.clear();
     allCocktailDrinks.clear();
     searchedCocktailDrinks.clear();
-    cocktailDAO.clear();
     fetchCocktailsWithPagination();
     notifyListeners();
   }
@@ -133,7 +132,7 @@ class HomeScreenViewModel extends ChangeNotifier {
   }
 
   void onToggleFavorite(Cocktail cocktail) {
-    cocktailDAO.setFavourite(cocktail, !cocktail.isFavourite);
+    cocktailDAO.setFavourite(cocktail.id, !cocktail.isFavourite);
     notifyListeners();
   }
 

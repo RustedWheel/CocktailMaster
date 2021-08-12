@@ -1,34 +1,45 @@
+import 'package:hive/hive.dart';
+
 import '../cocktail.dart';
 
 class CocktailDAO {
-  List<Cocktail> cocktailDrinks = [];
+
+  final Box<Cocktail> _database;
+
+  CocktailDAO(this._database);
 
   List<Cocktail> getAllCocktailDrinks() {
-    var list = cocktailDrinks.toList();
+    var list = _database.values.toList();
     list.sort((a, b) => a.name.compareTo(b.name));
     return list;
   }
 
   List<Cocktail> getFavouriteCocktails() {
-    return cocktailDrinks.where((element) => element.isFavourite).toList();
+    var list = _database.values.where((cocktail) => cocktail.isFavourite).toList();
+    list.sort((a, b) => a.name.compareTo(b.name));
+    return list;
   }
 
-  Cocktail getCocktail(String cocktailId) {
-    return cocktailDrinks.firstWhere((element) => element.id == cocktailId);
+  Cocktail? getCocktail(String cocktailId) {
+    return _database.get(cocktailId);
   }
 
   void createCocktail(Cocktail cocktail) {
-    if (!cocktailDrinks.any((element) => element.id == cocktail.id)) {
-      cocktailDrinks.add(cocktail);
+    var existingCocktail = _database.get(cocktail.id, defaultValue: null);
+    if(existingCocktail != null) {
+      cocktail.isFavourite = existingCocktail.isFavourite;
+      _database.put(cocktail.id, cocktail);
+    } else {
+      _database.put(cocktail.id, cocktail);
     }
   }
 
-  void setFavourite(Cocktail cocktail, bool favourite) {
-    cocktailDrinks.firstWhere((element) => element.id == cocktail.id).isFavourite = favourite;
-  }
-
-  void clear() {
-    cocktailDrinks.clear();
+  void setFavourite(String cocktailId, bool favourite) {
+    var cocktail = _database.get(cocktailId, defaultValue: null);
+    if (cocktail != null) {
+      cocktail.isFavourite = favourite;
+      _database.put(cocktailId, cocktail);
+    }
   }
 
 }

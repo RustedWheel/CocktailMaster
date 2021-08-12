@@ -14,12 +14,13 @@ class CocktailDetailsViewModel extends ChangeNotifier {
 
   void fetchCocktailDetails(String id) {
     cocktailId = id;
-    cocktail = cocktailDAO.getCocktail(cocktailId);
+    cocktail = cocktailDAO.getCocktail(cocktailId) ??
+        Cocktail(id: "", name: "", category: "", iba: null, alcoholic: "", glass: "", instructions: "", imageUrl: "", ingredients: []);
     instructions = cocktail.getInstructions();
   }
 
   void setFavorite() {
-    cocktailDAO.setFavourite(cocktail, !cocktail.isFavourite);
+    cocktailDAO.setFavourite(cocktail.id, !cocktail.isFavourite);
     notifyListeners();
   }
 

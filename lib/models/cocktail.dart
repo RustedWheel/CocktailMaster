@@ -1,23 +1,41 @@
 import 'package:cocktail_master/models/ingredient.dart';
 import 'package:cocktail_master/utils/extensions.dart';
+import 'package:hive/hive.dart';
 
-// For filtering
-enum IBA {
-  unforgettables,
-  contemporaryClassics,
-  newEraDrinks
-}
+import 'iba.dart';
+part 'cocktail.g.dart';
 
+@HiveType(typeId: 1)
 class Cocktail {
+
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String name;
+
+  @HiveField(2)
   final String category;
+
+  @HiveField(3)
   final IBA? iba;
+
+  @HiveField(4)
   final String alcoholic;
+
+  @HiveField(5)
   final String glass;
+
+  @HiveField(6)
   final String instructions;
+
+  @HiveField(7)
   final String imageUrl;
+
+  @HiveField(8)
   final List<Ingredient> ingredients;
+
+  @HiveField(9)
   bool isFavourite = false;
 
   Cocktail({

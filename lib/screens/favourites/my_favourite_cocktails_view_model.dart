@@ -17,7 +17,7 @@ class MyFavouriteCocktailsViewModel extends ChangeNotifier {
   }
 
   void onToggleFavorite(Cocktail cocktail) {
-    cocktailDAO.setFavourite(cocktail, !cocktail.isFavourite);
+    cocktailDAO.setFavourite(cocktail.id, !cocktail.isFavourite);
     notifyListeners();
   }
 

@@ -40,11 +40,11 @@ class CocktailService {
     final statusCode = response.statusCode;
     if (statusCode.isSuccess()) {
       var parsedJson = await json.decode(response.body);
-      List<Cocktail> cocktailDrinks = [];
+      List<Cocktail> searchResult = [];
       if (parsedJson['drinks'] != null) {
         parsedJson['drinks'].forEach((v) {
           var cocktailDrink = Cocktail.fromJson(v);
-          cocktailDrinks.add(cocktailDrink);
+          searchResult.add(cocktailDrink);
           _cocktailDAO.createCocktail(cocktailDrink);
         });
       }
@@ -52,7 +52,7 @@ class CocktailService {
           isSuccess: true,
           statusCode: statusCode,
           raw: response,
-          data: cocktailDrinks);
+          data: searchResult);
     } else {
       apiResponse = NetworkAPIResponse(
           isSuccess: false, statusCode: statusCode, raw: response);
