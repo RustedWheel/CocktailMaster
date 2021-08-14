@@ -59,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Future<void> _fetchCocktailData() async {
       viewModel.resetAndFetch();
-      viewModel.fetchRandomCocktails();
       setState(() {});
     }
 
@@ -139,7 +138,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (viewModel.searchTerm.isEmpty)
                       CardGridList(viewModel.allCocktailDrinks, true)
                     else
-                      CardGridList(viewModel.searchedCocktailDrinks, true)
+                      CardGridList(viewModel.searchedCocktailDrinks, true),
+                    if (viewModel.isLoading)
+                       SliverToBoxAdapter(
+                        child: Container(
+                          height: 88,
+                          child: const Center(
+                            child: SizedBox(
+                                width: 24.0,
+                                height: 24.0,
+                                child: CircularProgressIndicator(
+                                    color: Colors.white)),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
                 onRefresh: _fetchCocktailData,

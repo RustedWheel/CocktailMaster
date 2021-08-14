@@ -6,7 +6,6 @@ import 'package:cocktail_master/services/cocktail_service.dart';
 import 'package:flutter/cupertino.dart';
 
 class HomeScreenViewModel extends ChangeNotifier {
-
   CocktailService cocktailService;
   CocktailDAO cocktailDAO;
 
@@ -16,35 +15,60 @@ class HomeScreenViewModel extends ChangeNotifier {
   String errorMessage = "";
   String searchTerm = "";
 
+  var isLoading = false;
+
   var currentPageNum = "a".codeUnitAt(0);
   var lastPageNum = "z".codeUnitAt(0);
+  var numberOfCocktailDrinks = 0;
 
   CancelableOperation? _cancellableOperation;
 
-  HomeScreenViewModel(this.cocktailService, this.cocktailDAO);
+  HomeScreenViewModel(this.cocktailService, this.cocktailDAO) {
+    updateCocktailsList();
+    notifyListeners();
+  }
 
   void resetAndFetch() {
     currentPageNum = "a".codeUnitAt(0);
     randomCocktailDrinks.clear();
-    allCocktailDrinks.clear();
-    searchedCocktailDrinks.clear();
-    fetchCocktailsWithPagination();
+    fetchRandomCocktails();
+    fetchCocktailsWithPagination(loadIfMore: false);
     notifyListeners();
   }
 
-  void fetchCocktailsWithPagination() async {
-    if (searchTerm.isNotEmpty) {
+  void fetchCocktailsWithPagination({bool loadIfMore = true}) async {
+
+    if (searchTerm.isNotEmpty || isLoading) {
       return;
     }
 
     var hasNextPage = currentPageNum <= lastPageNum;
     if (hasNextPage) {
+
+      final currentNumberOfDrinks = numberOfCocktailDrinks;
+
+      debugPrint('fetchCocktailsWithPagination, currentPageNum: $currentPageNum');
+      _setLoading(true);
+
       NetworkAPIResponse response = await cocktailService
           .fetchCocktails(String.fromCharCode(currentPageNum));
 
       if (response.isSuccess) {
+        _setLoading(false);
         updateCocktailsList();
+        notifyListeners();
+
+        debugPrint('fetchCocktailsWithPagination, currentNumberOfDrinks: $currentNumberOfDrinks');
+        debugPrint('fetchCocktailsWithPagination, numberOfCocktailDrinks: $numberOfCocktailDrinks');
+
+        currentPageNum++;
+
+        if (loadIfMore && numberOfCocktailDrinks <= currentNumberOfDrinks) {
+          debugPrint('fetchCocktailsWithPagination, fetch more');
+          fetchCocktailsWithPagination();
+        }
       } else {
+        _setLoading(false);
         switch (response.statusCode) {
           case 400:
             errorMessage = "Error precessing request";
@@ -55,12 +79,14 @@ class HomeScreenViewModel extends ChangeNotifier {
           default:
             errorMessage = "Oops, Something went wrong";
         }
+        notifyListeners();
       }
-
-      notifyListeners();
     }
+  }
 
-    currentPageNum++;
+  void _setLoading(bool loading) {
+    isLoading = loading;
+    notifyListeners();
   }
 
   void updateSearchTerm(String value) async {
@@ -81,15 +107,19 @@ class HomeScreenViewModel extends ChangeNotifier {
         debugPrint('done :$value')
       });
     } else {
+      _setLoading(false);
       searchedCocktailDrinks.clear();
       notifyListeners();
     }
   }
 
   Future searchCocktail(String value) async {
+
+    _setLoading(true);
     NetworkAPIResponse response = await cocktailService.searchCocktail(value);
 
     if (response.isSuccess) {
+      _setLoading(false);
       if (response.data != null) {
         searchedCocktailDrinks.clear();
 
@@ -99,6 +129,7 @@ class HomeScreenViewModel extends ChangeNotifier {
         }
       }
     } else {
+      _setLoading(false);
       switch (response.statusCode) {
         case 400:
           errorMessage = "Error precessing request";
@@ -120,15 +151,15 @@ class HomeScreenViewModel extends ChangeNotifier {
       NetworkAPIResponse response = await cocktailService.getRandomCocktail();
       if (response.isSuccess && response.data != null) {
         randomCocktailDrinks.add(response.data);
+        updateCocktailsList();
+        notifyListeners();
       }
     }
-
-    updateCocktailsList();
-    notifyListeners();
   }
 
   void updateCocktailsList() {
     allCocktailDrinks = cocktailDAO.getAllCocktailDrinks();
+    numberOfCocktailDrinks = allCocktailDrinks.length;
   }
 
   void onToggleFavorite(Cocktail cocktail) {
