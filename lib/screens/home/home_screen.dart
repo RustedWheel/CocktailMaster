@@ -24,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
@@ -47,8 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void scrollListener() {
     if (scrollController.offset >= scrollController.position.maxScrollExtent &&
         !scrollController.position.outOfRange) {
-      Provider.of<HomeScreenViewModel>(context, listen: false)
-          .fetchCocktailsWithPagination();
+      final viewModel =
+          Provider.of<HomeScreenViewModel>(context, listen: false);
+      viewModel.fetchCocktailsWithPagination().then((value) => {
+            if (viewModel.errorMessage.isNotEmpty)
+              {_showToast(context, viewModel.errorMessage)}
+          });
       setState(() {});
     }
   }
@@ -58,7 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
     var viewModel = context.watch<HomeScreenViewModel>();
 
     Future<void> _fetchCocktailData() async {
-      viewModel.resetAndFetch();
+      viewModel.resetAndFetch().then((value) => {
+            if (viewModel.errorMessage.isNotEmpty)
+              {_showToast(context, viewModel.errorMessage)}
+          });
       setState(() {});
     }
 
@@ -126,7 +132,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     if (viewModel.searchTerm.isEmpty)
                       const SliverToBoxAdapter(
-                        child: _HomeSectionHeader(StringsHome.homeRandomSelections),
+                        child: _HomeSectionHeader(
+                            StringsHome.homeRandomSelections),
                       ),
                     if (viewModel.searchTerm.isEmpty)
                       _HomeRandomSelectionCardList(
@@ -140,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     else
                       CardGridList(viewModel.searchedCocktailDrinks, true),
                     if (viewModel.isLoading)
-                       SliverToBoxAdapter(
+                      SliverToBoxAdapter(
                         child: Container(
                           height: 88,
                           child: const Center(
@@ -157,6 +164,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 onRefresh: _fetchCocktailData,
               ),
             )));
+  }
+
+  void _showToast(BuildContext context, String message) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        action: SnackBarAction(
+          label: 'DISMISS',
+          onPressed: scaffold.hideCurrentSnackBar,
+          textColor: Colors.white,
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
@@ -190,12 +212,12 @@ class _HomeAppBar extends StatelessWidget {
               icon: Image.asset(Images.imageIconSavedFavourites),
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyFavouriteCocktailsScreen())).then((value) =>
-                    Provider.of<HomeScreenViewModel>(context,
-                        listen: false)
-                        .onBack());
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MyFavouriteCocktailsScreen()))
+                    .then((value) =>
+                        Provider.of<HomeScreenViewModel>(context, listen: false)
+                            .onBack());
               }),
         )
       ],
@@ -203,12 +225,10 @@ class _HomeAppBar extends StatelessWidget {
   }
 }
 
-class _HomeSectionHeader extends StatelessWidget{
-
+class _HomeSectionHeader extends StatelessWidget {
   final String headerText;
 
-  const _HomeSectionHeader(this.headerText, {Key? key})
-      : super(key: key);
+  const _HomeSectionHeader(this.headerText, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -220,7 +240,6 @@ class _HomeSectionHeader extends StatelessWidget{
       child: Text(headerText, style: TextStyles.subheader),
     );
   }
-
 }
 
 class _HomeRandomSelectionCardList extends StatelessWidget {

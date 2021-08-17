@@ -28,15 +28,15 @@ class HomeScreenViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void resetAndFetch() {
+  Future<void> resetAndFetch() async {
     currentPageNum = "a".codeUnitAt(0);
     randomCocktailDrinks.clear();
     fetchRandomCocktails();
-    fetchCocktailsWithPagination(loadIfMore: false);
+    await fetchCocktailsWithPagination(loadIfMore: false);
     notifyListeners();
   }
 
-  void fetchCocktailsWithPagination({bool loadIfMore = true}) async {
+  Future<void> fetchCocktailsWithPagination({bool loadIfMore = true}) async {
 
     if (searchTerm.isNotEmpty || isLoading) {
       return;
@@ -55,6 +55,7 @@ class HomeScreenViewModel extends ChangeNotifier {
 
       if (response.isSuccess) {
         _setLoading(false);
+        errorMessage = "";
         updateCocktailsList();
         notifyListeners();
 
@@ -65,7 +66,7 @@ class HomeScreenViewModel extends ChangeNotifier {
 
         if (loadIfMore && numberOfCocktailDrinks <= currentNumberOfDrinks) {
           debugPrint('fetchCocktailsWithPagination, fetch more');
-          fetchCocktailsWithPagination();
+          await fetchCocktailsWithPagination();
         }
       } else {
         _setLoading(false);
@@ -75,6 +76,9 @@ class HomeScreenViewModel extends ChangeNotifier {
             break;
           case 500:
             errorMessage = "Dead server";
+            break;
+          case null:
+            errorMessage = response.error;
             break;
           default:
             errorMessage = "Oops, Something went wrong";
@@ -120,6 +124,7 @@ class HomeScreenViewModel extends ChangeNotifier {
 
     if (response.isSuccess) {
       _setLoading(false);
+      errorMessage = "";
       if (response.data != null) {
         searchedCocktailDrinks.clear();
 
@@ -136,6 +141,9 @@ class HomeScreenViewModel extends ChangeNotifier {
           break;
         case 500:
           errorMessage = "Dead server";
+          break;
+        case null:
+          errorMessage = response.error;
           break;
         default:
           errorMessage = "Oops, Something went wrong";
