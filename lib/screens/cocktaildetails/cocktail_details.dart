@@ -13,15 +13,15 @@ import 'package:flutter/painting.dart';
 import 'package:provider/src/provider.dart';
 
 class CocktailDetailsScreen extends StatelessWidget {
-
   final String cocktailID;
 
-  const CocktailDetailsScreen({required this.cocktailID, Key? key}) : super(key: key);
+  const CocktailDetailsScreen({required this.cocktailID, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-    final viewModel = context.watch<CocktailDetailsViewModel>()..fetchCocktailDetails(cocktailID);
+    final viewModel = context.watch<CocktailDetailsViewModel>()
+      ..fetchCocktailDetails(cocktailID);
 
     return Scaffold(
         body: Stack(
@@ -113,7 +113,8 @@ class CocktailDetailsScreen extends StatelessWidget {
                             child: viewModel.cocktail.iba != null
                                 ? Text("IBA: ${viewModel.cocktail.iba.valueOf}",
                                     style: TextStyles.body2.copyWith(
-                                        color: CocktailColors.whiteTransparent60))
+                                        color:
+                                            CocktailColors.whiteTransparent60))
                                 : Container(),
                           ),
                           Padding(
@@ -131,7 +132,9 @@ class CocktailDetailsScreen extends StatelessWidget {
                         top: Spacing.spacing4x,
                         left: Spacing.spacing2x,
                         right: Spacing.spacing2x),
-                    child: Text(StringsCocktailDetails.cocktailDetailsInstructions, style: TextStyles.subheader)),
+                    child: Text(
+                        StringsCocktailDetails.cocktailDetailsInstructions,
+                        style: TextStyles.subheader)),
               ]),
             ),
             _buildInstructions(viewModel.instructions),
@@ -146,7 +149,9 @@ class CocktailDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: [
-                      const Text(StringsCocktailDetails.cocktailDetailsIngredients, style: TextStyles.subheader),
+                      const Text(
+                          StringsCocktailDetails.cocktailDetailsIngredients,
+                          style: TextStyles.subheader),
                       const Spacer(),
                       Text("${viewModel.cocktail.ingredients.length} items",
                           style: TextStyles.body2.copyWith(
@@ -170,7 +175,10 @@ class CocktailDetailsScreen extends StatelessWidget {
         Expanded(
           child: Column(
             children: [
-              Text(StringsCocktailDetails.cocktailDetailsGlassType.toUpperCase(), style: TextStyles.smallheader),
+              Text(
+                  StringsCocktailDetails.cocktailDetailsGlassType.toUpperCase(),
+                  style: TextStyles.smallheader,
+                  textAlign: TextAlign.center),
               Padding(
                   padding: const EdgeInsets.only(
                       left: Spacing.spacing1x,
@@ -189,8 +197,11 @@ class CocktailDetailsScreen extends StatelessWidget {
         Expanded(
           child: Column(
             children: [
-              Text(StringsCocktailDetails.cocktailDetailsCocktailType.toUpperCase(),
-                  style: TextStyles.smallheader),
+              Text(
+                  StringsCocktailDetails.cocktailDetailsCocktailType
+                      .toUpperCase(),
+                  style: TextStyles.smallheader,
+                  textAlign: TextAlign.center),
               Padding(
                   padding: const EdgeInsets.only(
                       left: Spacing.spacing1x,
@@ -209,7 +220,8 @@ class CocktailDetailsScreen extends StatelessWidget {
         Expanded(
             child: Column(
           children: [
-            Text(StringsCocktailDetails.cocktailDetailsAlcoholic.toUpperCase(), style: TextStyles.smallheader),
+            Text(StringsCocktailDetails.cocktailDetailsAlcoholic.toUpperCase(),
+                style: TextStyles.smallheader, textAlign: TextAlign.center),
             Padding(
                 padding: const EdgeInsets.only(
                     left: Spacing.spacing1x,
@@ -374,9 +386,12 @@ class CocktailDetailsScreen extends StatelessWidget {
             padding: const EdgeInsets.all(Spacing.spacing1x),
             child: ElevatedButton(
               onPressed: () {
-                Provider.of<CocktailDetailsViewModel>(context, listen: false).setFavorite();
+                Provider.of<CocktailDetailsViewModel>(context, listen: false)
+                    .setFavorite();
               },
-              child: Icon(cocktail.isFavourite ? Icons.favorite : Icons.favorite_border, color: Colors.white),
+              child: Icon(
+                  cocktail.isFavourite ? Icons.favorite : Icons.favorite_border,
+                  color: Colors.white),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 padding: const EdgeInsets.all(10),
