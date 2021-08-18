@@ -70,100 +70,102 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
         body: Container(
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                  CocktailColors.background16,
-                  CocktailColors.background19
-                ])),
-            child: SafeArea(
-              child: RefreshIndicator(
-                key: _refreshIndicatorKey,
-                child: CustomScrollView(
-                  controller: scrollController,
-                  slivers: <Widget>[
-                    // Add the app bar to the CustomScrollView.
-                    _HomeAppBar(),
-                    SliverPersistentHeader(
-                      pinned: true,
-                      delegate: PersistentHeader(
-                        widget: TextField(
-                          controller: textInputController,
-                          style: TextStyles.body2,
-                          cursorColor: CocktailColors.whiteTransparent25,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: CocktailColors.background13,
-                            enabledBorder: const OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                borderSide: BorderSide(
-                                    color: CocktailColors.background8,
-                                    width: 2)),
-                            focusedBorder: const OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                borderSide: BorderSide(
-                                    color: CocktailColors.background8,
-                                    width: 2)),
-                            hintText: StringsHome.homeSearchDrink,
-                            hintStyle: TextStyles.body2,
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                if (textInputController.text.isNotEmpty) {
-                                  textInputController.clear();
-                                  viewModel.updateSearchTerm("");
-                                  setState(() {});
-                                }
-                              },
-                              icon: Icon(Icons.clear,
-                                  color: viewModel.searchTerm.isNotEmpty
-                                      ? Colors.white
-                                      : Colors.transparent),
-                            ),
-                          ),
-                          onChanged: (text) {
-                            viewModel.updateSearchTerm(text);
+      decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+            CocktailColors.background16,
+            CocktailColors.background19
+          ])),
+      child: GestureDetector(
+        child: SafeArea(
+          child: RefreshIndicator(
+            key: _refreshIndicatorKey,
+            child: CustomScrollView(
+              controller: scrollController,
+              slivers: <Widget>[
+                // Add the app bar to the CustomScrollView.
+                _HomeAppBar(),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: PersistentHeader(
+                    widget: TextField(
+                      controller: textInputController,
+                      style: TextStyles.body2,
+                      cursorColor: CocktailColors.whiteTransparent25,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: CocktailColors.background13,
+                        enabledBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            borderSide: BorderSide(
+                                color: CocktailColors.background8, width: 2)),
+                        focusedBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            borderSide: BorderSide(
+                                color: CocktailColors.background8, width: 2)),
+                        hintText: StringsHome.homeSearchDrink,
+                        hintStyle: TextStyles.body2,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            if (textInputController.text.isNotEmpty) {
+                              textInputController.clear();
+                              viewModel.updateSearchTerm("");
+                              setState(() {});
+                            }
                           },
+                          icon: Icon(Icons.clear,
+                              color: viewModel.searchTerm.isNotEmpty
+                                  ? Colors.white
+                                  : Colors.transparent),
                         ),
+                      ),
+                      onChanged: (text) {
+                        viewModel.updateSearchTerm(text);
+                      },
+                    ),
+                  ),
+                ),
+                if (viewModel.searchTerm.isEmpty)
+                  const SliverToBoxAdapter(
+                    child: _HomeSectionHeader(StringsHome.homeRandomSelections),
+                  ),
+                if (viewModel.searchTerm.isEmpty)
+                  _HomeRandomSelectionCardList(viewModel.randomCocktailDrinks),
+                if (viewModel.searchTerm.isEmpty)
+                  const SliverToBoxAdapter(
+                    child: _HomeSectionHeader(StringsHome.homeAllDrinks),
+                  ),
+                if (viewModel.searchTerm.isEmpty)
+                  CardGridList(viewModel.allCocktailDrinks, true)
+                else
+                  CardGridList(viewModel.searchedCocktailDrinks, true),
+                if (viewModel.isLoading)
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: 88,
+                      child: const Center(
+                        child: SizedBox(
+                            width: 24.0,
+                            height: 24.0,
+                            child:
+                                CircularProgressIndicator(color: Colors.white)),
                       ),
                     ),
-                    if (viewModel.searchTerm.isEmpty)
-                      const SliverToBoxAdapter(
-                        child: _HomeSectionHeader(
-                            StringsHome.homeRandomSelections),
-                      ),
-                    if (viewModel.searchTerm.isEmpty)
-                      _HomeRandomSelectionCardList(
-                          viewModel.randomCocktailDrinks),
-                    if (viewModel.searchTerm.isEmpty)
-                      const SliverToBoxAdapter(
-                        child: _HomeSectionHeader(StringsHome.homeAllDrinks),
-                      ),
-                    if (viewModel.searchTerm.isEmpty)
-                      CardGridList(viewModel.allCocktailDrinks, true)
-                    else
-                      CardGridList(viewModel.searchedCocktailDrinks, true),
-                    if (viewModel.isLoading)
-                      SliverToBoxAdapter(
-                        child: Container(
-                          height: 88,
-                          child: const Center(
-                            child: SizedBox(
-                                width: 24.0,
-                                height: 24.0,
-                                child: CircularProgressIndicator(
-                                    color: Colors.white)),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                onRefresh: _fetchCocktailData,
-              ),
-            )));
+                  ),
+              ],
+            ),
+            onRefresh: _fetchCocktailData,
+          ),
+        ),
+        onTap: () => {_clearFocus(context)},
+      ),
+    ));
+  }
+
+  void _clearFocus(BuildContext context) {
+    FocusScope.of(context).unfocus();
   }
 
   void _showToast(BuildContext context, String message) {
