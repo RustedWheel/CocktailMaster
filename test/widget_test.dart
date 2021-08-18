@@ -5,15 +5,23 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:cocktail_master/models/cocktail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cocktail_master/main.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    final document = await getApplicationDocumentsDirectory();
+    Hive.init(document.path);
+    final Box<Cocktail> database = await Hive.openBox<Cocktail>(dataBoxName);
+
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+    await tester.pumpWidget(MyApp(database: database));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
