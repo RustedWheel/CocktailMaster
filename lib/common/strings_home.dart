@@ -3,4 +3,5 @@ class StringsHome {
   static const homeSearchDrink = "Search drink";
   static const homeRandomSelections = "Random Selections";
   static const homeAllDrinks = "All Drinks";
+  static const homeDismiss = "DISMISS";
 }

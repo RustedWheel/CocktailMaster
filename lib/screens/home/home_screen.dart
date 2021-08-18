@@ -174,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
       SnackBar(
         content: Text(message),
         action: SnackBarAction(
-          label: 'DISMISS',
+          label: StringsHome.homeDismiss,
           onPressed: scaffold.hideCurrentSnackBar,
           textColor: Colors.white,
         ),
